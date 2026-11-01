@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skewcoder"
+version = "1.0.0"
+description = "Code the metrics and interdependencies of a scientific paper and/or the firm blog post about it, and map one onto the other."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = ["beautifulsoup4", "lxml", "PyMuPDF", "sympy>=1.12", "numpy"]
+
+[project.optional-dependencies]
+api = ["anthropic>=1.0"]                                   # SKEWCODER_BACKEND=api
+similarity = ["sentence-transformers>=3", "numpy"]         # scores for the viewer's sliders (~400 MB model, downloaded once)
+
+[project.scripts]
+skewcoder = "skewcoder.cli:main"
+
+[tool.setuptools]
+packages = ["skewcoder", "skewcoder.backends"]
+
+[tool.setuptools.package-data]
+skewcoder = ["briefs/*.md"]
