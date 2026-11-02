@@ -160,7 +160,7 @@ BODY = load_body()
 
 out = os.path.join(HERE, "method.html")
 with open(out, "w", encoding="utf-8") as f:
-    f.write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Paper–blog skew: extraction method</title><style>{CSS}</style></head><body><main>{BODY}</main></body></html>')
+    f.write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mapping Technical Artifacts: methods</title><style>{CSS}</style></head><body><main>{BODY}</main></body></html>')
 figdir = os.path.join(HERE, "figures"); os.makedirs(figdir, exist_ok=True)
 for name, s in FIGS.items():
     with open(os.path.join(figdir, name), "w", encoding="utf-8") as f:

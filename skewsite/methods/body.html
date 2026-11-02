@@ -1,36 +1,10 @@
-<h1>How skew is measured: metrics and interdependencies in a paper and in its blog</h1>
+<h1>Mapping Technical Artifacts: methods</h1>
 
 <h2>Overview</h2>
 <p>This appendix explains a tool for comparing the technical content of a scientific paper with that of a firm blog post discussing it. The tool extracts two components from each document: (i) <strong>metrics</strong>, the dimensions a text treats as measurable, and (ii) <strong>interdependencies</strong>, the relationships it establishes between those metrics. It then maps the blog’s metrics and interdependencies onto that of the paper. The comparison shows which technical dimensions the blog emphasizes, omits, or introduces relative to the paper.</p>
 <p>For example, qubit count, circuit depth, and fidelity are metrics. “Fidelity falls as qubit count and circuit depth grow” states interdependencies between fidelity and qubit count, and between fidelity and circuit depth. A text may simply report both depth and fidelity, failing to state the interdependence between them; or report only fidelity, omitting qubit count and circuit depth as well as their interdependencies. Accounting for each of these metrics and interdependencies can enable a comprehensive analysis of what a blog keeps or discards relative to its underlying paper.</p>
-<table style="width:100%;">
-<caption><b>Table A1.</b> The four components extracted by the tool</caption>
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 41%" />
-<col style="width: 47%" />
-</colgroup>
-<thead>
-<tr>
-<th><strong>Source</strong></th>
-<th style="text-align: center;"><strong>Metrics</strong></th>
-<th style="text-align: center;"><strong>Interdependencies</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Paper</td>
-<td>Defined mathematical variables and measurable dimensions named in prose</td>
-<td>Relationships established by equations, explicit prose statements, and stated conditions</td>
-</tr>
-<tr>
-<td>Blog</td>
-<td>Measurable dimensions identified in the blog’s wording or matched to the paper’s terminology</td>
-<td>Relationships stated within a sentence through an explicit connective, together with stated conditions</td>
-</tr>
-</tbody>
-</table>
-<p>Table A1 summarizes how metrics and interdependencies are extracted from the papers and blogs. Each document is initially coded without access to the other document, with metrics identified before interdependencies. A subsequent mapping stage compares the two documents. Section 2 explains the extraction rules, Section 3 provides a worked example, Section 4 combines the two documents in a map, and Section 5 explains how the comparison measures can inform organizational research.</p>
+
+<p>Each document is initially coded without access to the other document, with metrics identified before interdependencies. A subsequent mapping stage compares the two documents. Section 2 explains the extraction rules, Section 3 provides a worked example, Section 4 combines the two documents in a map, and Section 5 explains how the comparison measures can inform organizational research.</p>
 <h2>Measurement</h2>
 <h3>Metrics in a paper</h3>
 <p>The tool reads the paper’s main text, including its abstract, introduction, preliminaries, results, and methods; appendices and supplementary material are excluded from the intended coding scope. It reconstructs the paper from its source, such as a PDF or LaTeX file, and presents it in HTML. Selecting a metric displays the relevant sentences and equations, allowing a reader to verify what was extracted and where it occurs. Errors in text reconstruction or equation cropping can affect extraction, so these passages remain available for inspection.</p>
@@ -38,9 +12,9 @@
 <p>Mathematical notation provides the first basis for identifying paper metrics. A variable defined in the paper is recorded together with any associated definition. For example, “n is the number of qubits” identifies qubit count, “t is the simulation time” identifies simulation time, and a definition of F<sub>XEB</sub> as cross-entropy benchmarking fidelity identifies that fidelity measure. The paper’s own definitions anchor these decisions rather than requiring an LLM to infer the dimension from a general discussion of the technology, allowing us to identify metrics as objectively as possible.</p>
 <p>Dummy indices, such as i in the sum <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∑</mo><mrow><mi>i</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mn>1</mn></mrow><mi>n</mi></msubsup><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_{i\  = \ 1}^{n}x_{i}</annotation></semantics></math>, are excluded. Objects used only as operators, matrices, or transformations are also excluded. For example, a Hamiltonian H describes how a quantum system evolves. H is excluded when used only in this mathematical role. The measurable quantities that enter the Hamiltonian can nevertheless enter the inventory of metrics.</p>
 <h4>Metrics identified from prose</h4>
-<p>The tool also uses a large language model to identify measurable dimensions named in prose, to extend the reach of the tool beyond what metrics have been formally notated in a mathematical symbol or equation. Examples include gate complexity, classical computing cost, and quantum volume. The model reads the noun phrase in context and identifies what can be counted, timed, compared, or otherwise measured. Expressions such as “the number of qubits,” “low error rate,” and “cost grows with circuit depth” make the relevant dimensions explicit in different ways. Table A2 sets out the measurement frames that help identify these expressions.</p>
+<p>The tool also uses a large language model to identify measurable dimensions named in prose, to extend the reach of the tool beyond what metrics have been formally notated in a mathematical symbol or equation. Examples include gate complexity, classical computing cost, and quantum volume. The model reads the noun phrase in context and identifies what can be counted, timed, compared, or otherwise measured. Expressions such as “the number of qubits,” “low error rate,” and “cost grows with circuit depth” make the relevant dimensions explicit in different ways. Table A1 sets out the measurement frames that help identify these expressions.</p>
 <table>
-<caption><b>Table A2.</b> Measurement frames and the dimensions they identify</caption>
+<caption><b>Table A1.</b> Measurement frames and the dimensions they identify</caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 41%" />
@@ -117,9 +91,9 @@
 <p>For polynomial equations, the tool uses a Gröbner basis (Cox, Little, and O’Shea 2015), a standard form of the equation system that permits systematic checks of whether an additional equation follows from it. An equation already obtainable by rearranging, substituting, or eliminating variables adds no independent mathematical relationship. For example, V = IR and P = IV already imply P = I²R. Reprinting that third equation adds another source passage but no independent relationship. The tool also reports the number of independent mathematical relationships, termed equation-system rank.</p>
 <p>After testing the equations for redundancy, the algebraic analysis identifies minimal groups of interdependent metrics. A group is interdependent when specifying all but one member restricts the remaining member to finitely many possible values, at a typical solution of the equations. It is minimal when no smaller subset already has this property. For example, {V, I, R} is such a group under V = IR. The definition permits several possible values: under P = I²R, knowing P and R may leave both a positive and a negative value for I. The two values still reflect a constraint on I.</p>
 <p>Two paper metrics are counted as interdependent when they belong to a common minimal group. The size of the smallest group containing a pair records its directness: a group of three requires one further metric to constrain the pair, whereas a group of four requires two. Thus, a smaller group means that fewer other metrics must be known to relate the pair. Through this treatment, the tool can then extract not only the existence of interdependence between metrics, but also the degree of interdependence.</p>
-<p>Table A3 illustrates how a minimal group relates a pair of metrics. Here Q denotes charge and t denotes elapsed time. The complete set of eight minimal groups appears in the worked example in Table A5.</p>
+<p>Table A2 illustrates how a minimal group relates a pair of metrics. Here Q denotes charge and t denotes elapsed time. The complete set of eight minimal groups appears in the worked example in Table A4.</p>
 <table>
-<caption><b>Table A3.</b> Minimal groups and the directness of an interdependence</caption>
+<caption><b>Table A2.</b> Minimal groups and the directness of an interdependence</caption>
 <colgroup>
 <col style="width: 20%" />
 <col style="width: 15%" />
@@ -165,9 +139,9 @@
 <p>As with metrics identified from prose, this step extends the tool’s reach beyond relationships expressed in mathematical notation. A prose interdependence requires two coded metrics and an explicit connective in one sentence. “Fidelity falls as circuit depth grows” qualifies because it states how one metric varies with the other. “We report fidelity and circuit depth” does not. Connectives include depends on, scales with, limited by, requires, and determines. The tool retains the sentence, the connective, and the two metrics, allowing the reader to assess the interpretation.</p>
 <p>A statement denying dependence is retained but does not itself contribute an interdependence. For example, “cost does not scale with the number of terms” records independence between those metrics under the stated circumstances. An inverse relationship, such as fidelity falling as depth increases, still counts as an asserted interdependence. Thus, the distinction is between asserting and denying a relationship, rather than between a positive and negative slope.</p>
 <h4>Conditions on an interdependence</h4>
-<p>Both equations and prose can establish a relationship that holds only under specified circumstances. These circumstances are its conditions: for example, a relationship may apply only at certain temperatures or under a particular implementation method. The condition can appear in the sentence itself, the assumptions of a theorem, an equation’s case split, or an explicitly stated section setting. Its metrics are identified under the rules in Section 2i; the task here is to connect them to the relationship they qualify. The condition is recorded with its supporting words and location. Table A4 illustrates these sources and the interdependencies they add.</p>
+<p>Both equations and prose can establish a relationship that holds only under specified circumstances. These circumstances are its conditions: for example, a relationship may apply only at certain temperatures or under a particular implementation method. The condition can appear in the sentence itself, the assumptions of a theorem, an equation’s case split, or an explicitly stated section setting. Its metrics are identified under the rules in Section 2i; the task here is to connect them to the relationship they qualify. The condition is recorded with its supporting words and location. Table A3 illustrates these sources and the interdependencies they add.</p>
 <table style="width:100%;">
-<caption><b>Table A4.</b> Conditions and the interdependencies they add</caption>
+<caption><b>Table A3.</b> Conditions and the interdependencies they add</caption>
 <colgroup>
 <col style="width: 17%" />
 <col style="width: 40%" />
@@ -225,9 +199,9 @@
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>P</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><msup><mi>I</mi><mn>2</mn></msup><mi>R</mi></mrow><annotation encoding="application/x-tex">(3)\ \ P\  = \ I^{2}R</annotation></semantics></math></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>Q</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">(4)\ \ Q\  = \ It</annotation></semantics></math></p>
 <p>It also states: “At temperatures T below 4 kelvin, voltage V is independent of current I.” The resulting inventory contains seven metrics: V, I, R, P, Q, t, and T. The temperature threshold is a value of T, rather than a separate metric.</p>
-<p>Equation (3) follows from substituting equation (1) into equation (2). It therefore adds no independent mathematical relationship. Equations (1), (2), and (4) supply three independent relationships and establish the eight minimal groups in Table A5.</p>
+<p>Equation (3) follows from substituting equation (1) into equation (2). It therefore adds no independent mathematical relationship. Equations (1), (2), and (4) supply three independent relationships and establish the eight minimal groups in Table A4.</p>
 <table>
-<caption><b>Table A5.</b> Minimal interdependent groups in the electricity paper</caption>
+<caption><b>Table A4.</b> Minimal interdependent groups in the electricity paper</caption>
 <colgroup>
 <col style="width: 29%" />
 <col style="width: 23%" />
@@ -317,13 +291,13 @@
 <p>The tool offers two basic ways of interpreting the differences between the paper’s and blog’s conceptual networks: where a paper’s metrics and interdependencies may be under or over represented in its companion blog.</p>
 <h3>Metric salience</h3>
 <p>Table 1 in the tool compares the share of attention given to each paper metric in the two documents. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> is its share of paper metric mentions. Each mention is a distinct sentence using one of the metric’s names, or a numbered equation containing it.</p>
-<p>Table A6 reports the worked example using the metric-salience measures shown in Table 1 on the website.</p>
+<p>Table A5 reports the worked example using the metric-salience measures shown in Table 1 on the website.</p>
 <p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math> is the share of blog metric mentions assigned to the corresponding paper metric. Its denominator includes all blog metrics, including unmatched ones; each metric counts at most once per sentence. Mention skew compares the paper and blog shares:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mspace width="0.222em"></mspace><mi>s</mi><mi>k</mi><mi>e</mi><mi>w</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mi>B</mi><mi>A</mi></mfrac></mrow><annotation encoding="application/x-tex">Mention\ skew\  = \ \frac{B}{A}</annotation></semantics></math></p>
 <p>A ratio above one indicates a larger share of attention in the blog; below one indicates a smaller share. The electricity paper has 21 metric mentions: six in the abstract, twelve across its four equations, and three in the temperature sentence. Power appears in the abstract and equations (2) and (3), giving A = 3/21. It receives two of the blog’s five mentions, giving B = 2/5. Its mention skew is therefore (2/5)/(3/21) = 2.80.</p>
 <p>The ratios use the website’s symbols and shading: ▲ for overrepresentation (at least ×1.41), ● for approximate proportionality (above ×0.71 and below ×1.41), and ▼ for underrepresentation (at most ×0.71). Darker fills identify ratios of at least ×2 or at most ×0.5.</p>
 <table>
-<caption><b>Table A6.</b> Metric salience in the worked example corresponding to website Table 1</caption>
+<caption><b>Table A5.</b> Metric salience in the worked example corresponding to website Table 1</caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 14%" />
@@ -427,11 +401,11 @@
 <p>The tool also compares blog attention with a metric’s centrality in the paper’s network of interdependencies. C is PageRank, calculated on the undirected paper network with damping 0.85 and normalized to sum to one. Centrality increases when a metric is interdependent with many metrics, or with metrics that are themselves central. Centrality skew, B/C, compares the blog’s attention with this structural position rather than with the metric’s frequency of mention.</p>
 <p>An unmatched blog metric contributes to total blog attention but has no paper-relative ratio. When one blog metric represents several paper metrics, its mentions count toward each without dividing the credit; the mapped B shares may therefore sum to more than one. If A is zero and B is positive, mention skew is infinite; if both are zero, it is undefined.</p>
 <h3>Interdependence salience</h3>
-<p>Table A7 illustrates the interdependence-salience measures reported in Table 2 on the website. It examines whether the blog retains interdependencies evenly across the paper metrics it names. For each represented paper metric, D is its number of distinct paper interdependencies and K is the number also stated in the blog. Its share supported is K/D. The typical share supported, p̄, is the mean of these shares across represented metrics, giving each metric equal weight. Selectivity compares a metric’s share with that mean:</p>
+<p>Table A6 illustrates the interdependence-salience measures reported in Table 2 on the website. It examines whether the blog retains interdependencies evenly across the paper metrics it names. For each represented paper metric, D is its number of distinct paper interdependencies and K is the number also stated in the blog. Its share supported is K/D. The typical share supported, p̄, is the mean of these shares across represented metrics, giving each metric equal weight. Selectivity compares a metric’s share with that mean:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>h</mi><mi>a</mi><mi>r</mi><mi>e</mi><mspace width="0.222em"></mspace><mi>s</mi><mi>u</mi><mi>p</mi><mi>p</mi><mi>o</mi><mi>r</mi><mi>t</mi><mi>e</mi><mi>d</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mi>K</mi><mi>D</mi></mfrac><mspace width="0.222em"></mspace><mo>,</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>S</mi><mi>e</mi><mi>l</mi><mi>e</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>i</mi><mi>t</mi><mi>y</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mrow><mi>K</mi><mi>/</mi><mi>D</mi></mrow><mover><mi>p</mi><mo accent="true">¯</mo></mover></mfrac></mrow><annotation encoding="application/x-tex">Share\ supported\  = \ \frac{K}{D}\ ,\ \ Selectivity\  = \ \frac{K/D}{\overline{p}}</annotation></semantics></math></p>
 <p>A selectivity of one indicates retention of the typical share. Values above one indicate greater retention; values below one indicate less. The expected number retained at the typical share is Dp̄. An interdependence introduced by the blog but absent from the paper does not increase K.</p>
 <table style="width:100%;">
-<caption><b>Table A7.</b> Interdependence salience in the worked example corresponding to website Table 2</caption>
+<caption><b>Table A6.</b> Interdependence salience in the worked example corresponding to website Table 2</caption>
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 7%" />
@@ -533,7 +507,7 @@
 </table>
 <p>The “Unsupported” column counts blog interdependencies absent from the paper. The additional temperature–power relationship contributes one to each endpoint’s count, while contributing nothing to the retained share. Values are calculated before display rounding.</p>
 <p>The blog retains one of current’s six interdependencies and one of power’s five. It retains none for charge or temperature. Thus p̄ = (1/6 + 1/5 + 0 + 0)/4 ≈ 0.092. Dividing each metric’s share by this mean gives selectivity of approximately 1.82 for current and 2.18 for power. The blog concentrates retained interdependence around these metrics. Its temperature–power statement remains additional to the paper and contributes to neither retention numerator.</p>
-<p>Paper metrics absent from the blog display NA in the website’s Table 2 and in Table A7 here, and are excluded from p̄; Table A6 shows their omission. A metric with no paper interdependencies has no defined share supported. If the blog retains none of the paper’s interdependencies, selectivity is undefined. D includes partners absent from the blog, so the measure reflects both omission of partner metrics and omission of relationships between named metrics.</p>
+<p>Paper metrics absent from the blog display NA in the website’s Table 2 and in Table A6 here, and are excluded from p̄; Table A5 shows their omission. A metric with no paper interdependencies has no defined share supported. If the blog retains none of the paper’s interdependencies, selectivity is undefined. D includes partners absent from the blog, so the measure reflects both omission of partner metrics and omission of relationships between named metrics.</p>
 <h2>Conclusion</h2>
 <p>These measures allow organizational research to examine how firms select and organize technical information. A blog may emphasize fidelity while omitting the circuit depth, computational cost, or operating conditions related to it in the paper. Metric salience captures the allocation of attention; interdependence salience captures the retention of those relationships. The underlying passages permit further assessment of how the firm represents their direction, magnitude, and conditions.</p>
 <p>Researchers can also use network measures to examine whether communication concentrates on a few central metrics, preserves clusters of interdependent metrics, or separates dimensions that the paper relates. These conceptual networks can be compared across a firm’s other artifacts, such as patents and press releases, across time, or across firms.</p>
