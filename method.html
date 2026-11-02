@@ -1,0 +1,534 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mapping Technical Artifacts: methods</title><style>
+:root{--ink:#1f2328;--muted:#6b7380;--line:#e6e8ec;--acc:#0072B2}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Helvetica,Arial,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 24px 80px}
+h1{font-size:26px;letter-spacing:-.01em;margin:0 0 4px}h2{font-size:19px;margin:36px 0 10px;padding-top:12px;border-top:1px solid var(--line)}h3{font-size:15.5px;margin:20px 0 6px}h4{font-size:14.5px;margin:16px 0 4px;color:#333}caption{caption-side:top;text-align:left;font-size:13px;color:var(--muted);padding:0 0 6px}math{font-size:1.05em}blockquote{margin:8px 0 12px;padding-left:14px;border-left:3px solid var(--line)}figure svg{height:auto}.sk-o2{background:rgba(213,94,0,.38)}.sk-o1{background:rgba(213,94,0,.16)}.sk-mid{background:rgba(0,158,115,.18)}.sk-u1{background:rgba(0,114,178,.14)}.sk-u2{background:rgba(0,114,178,.34)}nav.toc{margin:14px 0 8px;padding:10px 16px;border:1px solid var(--line);border-radius:8px}nav.toc p{margin:0 0 4px}nav.toc ul{margin:0;padding-left:0;list-style:none}nav.toc ul ul{padding-left:1.6em}nav.toc li{margin:2px 0}[id]{scroll-margin-top:12px}
+.by{color:var(--muted);margin:0 0 20px;font-size:14px}p{margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:10px 0 16px;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}th{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.eq{font:15px/1.5 ui-monospace,Menlo,monospace;background:#f6f7f9;border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0 14px}
+figure{margin:18px 0 22px}figure svg{display:block;border:1px solid var(--line);border-radius:8px}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+ol,ul{padding-left:22px}li{margin:3px 0}code{font:13px ui-monospace,Menlo,monospace;background:#f6f7f9;padding:1px 4px;border-radius:4px}
+@media print{main{max-width:none;padding:0}figure svg{border:none}h2{page-break-after:avoid}figure{page-break-inside:avoid}}
+</style></head><body><style>.sitebar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid #e6e8ec;font-size:14px}.sitebar div{max-width:860px;margin:0 auto;padding:10px 24px;display:flex;gap:18px;align-items:center}.sitebar a{color:#0072B2;text-decoration:none;font-weight:600}.sitebar a:hover{text-decoration:underline}.sitebar span{color:#6b7380}</style><div class="sitebar"><div><a href="./">← back to the skew site</a><span>How this was made</span></div></div><main><h1>Mapping Technical Artifacts: methods</h1><nav class="toc"><p><b>Contents</b></p><ul><li><a href="#overview">1. Overview</a></li><li><a href="#measurement">2. Measurement</a><ul><li><a href="#metrics-in-a-paper">2i. Metrics in a paper</a></li><li><a href="#interdependencies-in-a-paper">2ii. Interdependencies in a paper</a></li><li><a href="#metrics-in-a-blog">2iii. Metrics in a blog</a></li><li><a href="#interdependencies-in-a-blog">2iv. Interdependencies in a blog</a></li></ul></li><li><a href="#worked-example">3. Worked example</a><ul><li><a href="#a-short-paper-on-electricity">3i. A short paper on electricity</a></li><li><a href="#a-short-blog-post-about-the-electricity-paper">3ii. A short blog post about the electricity paper</a></li></ul></li><li><a href="#putting-both-together-checking-the-blog-against-">4. Putting both together checking the blog against the paper</a></li><li><a href="#measures-derived-from-the-map">5. Measures derived from the map</a><ul><li><a href="#metric-salience">5i. Metric salience</a></li><li><a href="#interdependence-salience">5ii. Interdependence salience</a></li></ul></li><li><a href="#conclusion">6. Conclusion</a></li><li><a href="#references">References</a></li></ul></nav>
+
+<h2 id="overview">1. Overview</h2>
+<p>This appendix explains a tool for comparing the technical content of a scientific paper with that of a firm blog post discussing it. The tool extracts two components from each document: (i) <strong>metrics</strong>, the dimensions a text treats as measurable, and (ii) <strong>interdependencies</strong>, the relationships it establishes between those metrics. It then maps the blog’s metrics and interdependencies onto that of the paper. The comparison shows which technical dimensions the blog emphasizes, omits, or introduces relative to the paper.</p>
+<p>For example, qubit count, circuit depth, and fidelity are metrics. “Fidelity falls as qubit count and circuit depth grow” states interdependencies between fidelity and qubit count, and between fidelity and circuit depth. A text may simply report both depth and fidelity, failing to state the interdependence between them; or report only fidelity, omitting qubit count and circuit depth as well as their interdependencies. Accounting for each of these metrics and interdependencies can enable a comprehensive analysis of what a blog keeps or discards relative to its underlying paper.</p>
+
+<p>Each document is initially coded without access to the other document, with metrics identified before interdependencies. A subsequent mapping stage compares the two documents. Section 2 explains the extraction rules, Section 3 provides a worked example, Section 4 combines the two documents in a map, and Section 5 explains how the comparison measures can inform organizational research.</p>
+<h2 id="measurement">2. Measurement</h2>
+<h3 id="metrics-in-a-paper">2i. Metrics in a paper</h3>
+<p>The tool reads the paper’s main text, including its abstract, introduction, preliminaries, results, and methods; appendices and supplementary material are excluded from the intended coding scope. It reconstructs the paper from its source, such as a PDF or LaTeX file, and presents it in HTML. Selecting a metric displays the relevant sentences and equations, allowing a reader to verify what was extracted and where it occurs. Errors in text reconstruction or equation cropping can affect extraction, so these passages remain available for inspection.</p>
+<h4 id="metrics-identified-from-mathematical-symbols">Metrics identified from mathematical symbols</h4>
+<p>Mathematical notation provides the first basis for identifying paper metrics. A variable defined in the paper is recorded together with any associated definition. For example, “n is the number of qubits” identifies qubit count, “t is the simulation time” identifies simulation time, and a definition of F<sub>XEB</sub> as cross-entropy benchmarking fidelity identifies that fidelity measure. The paper’s own definitions anchor these decisions rather than requiring an LLM to infer the dimension from a general discussion of the technology, allowing us to identify metrics as objectively as possible.</p>
+<p>Dummy indices, such as i in the sum <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>∑</mo><mrow><mi>i</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mn>1</mn></mrow><mi>n</mi></msubsup><msub><mi>x</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\sum_{i\  = \ 1}^{n}x_{i}</annotation></semantics></math>, are excluded. Objects used only as operators, matrices, or transformations are also excluded. For example, a Hamiltonian H describes how a quantum system evolves. H is excluded when used only in this mathematical role. The measurable quantities that enter the Hamiltonian can nevertheless enter the inventory of metrics.</p>
+<h4 id="metrics-identified-from-prose">Metrics identified from prose</h4>
+<p>The tool also uses a large language model to identify measurable dimensions named in prose, to extend the reach of the tool beyond what metrics have been formally notated in a mathematical symbol or equation. Examples include gate complexity, classical computing cost, and quantum volume. The model reads the noun phrase in context and identifies what can be counted, timed, compared, or otherwise measured. Expressions such as “the number of qubits,” “low error rate,” and “cost grows with circuit depth” make the relevant dimensions explicit in different ways. Table A1 sets out the measurement frames that help identify these expressions.</p>
+<table>
+<caption><b>Table A1.</b> Measurement frames and the dimensions they identify</caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 41%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Frame</strong></th>
+<th style="text-align: center;"><strong>Example</strong></th>
+<th style="text-align: center;"><strong>Metric identified</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scientific notation</td>
+<td style="text-align: center;">A count of 10⁶ samples</td>
+<td style="text-align: center;">Sample count</td>
+</tr>
+<tr>
+<td>Number and unit noun</td>
+<td style="text-align: center;">53 qubits; 200 seconds</td>
+<td style="text-align: center;">Qubit count; execution time</td>
+</tr>
+<tr>
+<td>Percentage or fold comparison</td>
+<td style="text-align: center;">99.5 percent fidelity; 100 times faster</td>
+<td style="text-align: center;">Fidelity; speed of execution</td>
+</tr>
+<tr>
+<td>Scaling construction</td>
+<td style="text-align: center;">Cost grows with circuit depth</td>
+<td style="text-align: center;">Cost; circuit depth</td>
+</tr>
+<tr>
+<td>Measurement head</td>
+<td style="text-align: center;">Number of qubits; time to simulate</td>
+<td style="text-align: center;">Qubit count; simulation time</td>
+</tr>
+<tr>
+<td>Degree modified property</td>
+<td style="text-align: center;">Low error rate; high fidelity</td>
+<td style="text-align: center;">Error rate; fidelity</td>
+</tr>
+<tr>
+<td>Superlative achievement</td>
+<td style="text-align: center;">The largest qubit count to date</td>
+<td style="text-align: center;">Qubit count</td>
+</tr>
+<tr>
+<td>Explicit naming</td>
+<td style="text-align: center;">The metric of quantum volume</td>
+<td style="text-align: center;">Quantum volume</td>
+</tr>
+</tbody>
+</table>
+<p>The tool also records a setting when the paper explicitly states a result under it. A setting is the model, method, platform, or regime to which a statement applies. For example, “for a sequential implementation” identifies the named method, sequential implementation, while “for a low-rank Hamiltonian” identifies rank, the property described as low. These settings are treated as metrics because they distinguish the circumstances under which a technical relationship holds. They need not be numerical quantities; the tool’s metric inventory therefore includes both measured dimensions and explicitly named conditions of applicability.</p>
+<h4 id="names-and-aliases">Names and aliases</h4>
+<p>A paper may use several names for one metric. The tool records these names in an alias table, with a quotation for each. For example, suppose a paper writes, “We denote gate count by g and refer to it as gate complexity.” The symbol g, “gate count,” and “gate complexity” are then aliases of one metric because the paper explicitly identifies them as such. The record also identifies where the metric is first named, such as the abstract or a numbered equation.</p>
+<p>The tool keeps distinct wordings separate unless they are mechanical variants or the paper explicitly joins their names. Singular and plural forms, capitalization, and hyphenation do not create new metrics. Nor does the symbol n create a second metric when the paper defines it as “number of qubits.” However, “gate error rate,” “error rate,” and “fidelity” remain separate unless a naming statement equates them. Note that a sentence saying that fidelity depends on error rate establishes an interdependence; it does not establish that they are alternative names for one metric. This distinction is critical to prevent metric names from conflating with the interdependencies between them (which are measured later).</p>
+<h4 id="the-metric-boundary-slider">The metric boundary slider</h4>
+<p>The eventual mapping between a blog’s and a paper’s metrics and interdependencies can be very sensitive to how the metrics are defined in the first place. The tool then allows the user to define the semantic boundary between metrics. All metrics are recorded in the database at their lowest level of granularity, to preserve as much heterogeneity as possible. This inventory contains the separately identified metrics, their names, and the supporting quotations. The user can then adjust a metric boundary slider to determine the extent to which different terms are conflated. At the fine end, distinct coded terms remain separate. Moving toward coarse combines terms whose meanings are sufficiently similar. A reader can therefore examine whether a result depends on treating “error rate” and “gate error rate,” for example, as separate dimensions or as one.</p>
+<p>Similarity is assessed from a short definition of each metric: what it measures, what it is a quantity of, and its unit when stated. For example, “the difficulty of finding the most likely bitstrings on a classical computer” may describe a dimension similar to the paper’s “classical computing cost” despite sharing few words. Definitions help make that comparison.</p>
+<p>The tool converts the definitions into numerical representations with the sentence-transformers/all-mpnet-base-v2 model and compares them using cosine similarity. Terms combine when their similarity reaches the chosen threshold. Combinations can form chains: if A is similar enough to B, and B to C, all three combine. Paper metrics represented by mathematical symbols are kept separate by this slider; a symbol joins its defined phrase through the naming rule above.</p>
+<p>Adjusting the slider recomputes the displayed metrics, interdependencies, and comparison measures without changing the underlying coding. The slider setting therefore forms part of any reported result. Section 4 explains how the same setting affects matching between the paper and the blog. The worked example uses the fine setting so that each named metric remains separate.</p>
+<h3 id="interdependencies-in-a-paper">2ii. Interdependencies in a paper</h3>
+<p>The tool first identifies paper interdependencies from the mathematical relationships stated in equations. As with metrics, the paper’s formal notation provides a basis for identifying them as objectively as possible. It then uses prose to extend coverage to relationships expressed without an equation. The tool retains the source of each interdependence and the conditions under which it is stated to hold.</p>
+<h4 id="interdependencies-established-by-equations">Interdependencies established by equations</h4>
+<p>Interdependencies between metrics are elicited through their mathematical relationships in the paper’s numbered equations. For example, V = IR relates voltage V, current I, and resistance R. Only relationships stated in the paper enter the calculation. The tool does not add an unstated physical law: if the paper states V = IR but never states P = IV, the tool does not introduce the latter relationship between power, current, and voltage from outside knowledge.</p>
+<p>One way to extract interdependencies is to count which metrics occur together in an equation. This makes the result sensitive to how an author presents mathematically equivalent information. Suppose a paper states:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>R</mi><mspace width="0.222em"></mspace><mo>,</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>P</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">V\  = \ IR\ ,\ \ P\  = \ IV</annotation></semantics></math></p>
+<p>Substituting the first equation into the second gives P = I²R. Printing this additional equation makes power and resistance appear together for the first time. A rule based on cooccurrence would therefore add an interdependence, although the equation supplies no new mathematical information. The relationship between power and resistance is already implied by the first two equations.</p>
+<p>We therefore need to undertake an algebraic analysis to remove redundant equations and identify interdependencies implied by the equations jointly. This allows the tool to recover the same relationships whether an author prints an algebraic consequence separately or leaves it implicit.</p>
+<h4 id="removing-redundancy-and-identifying-implied-inte">Removing redundancy and identifying implied interdependencies</h4>
+<p>For polynomial equations, the tool uses a Gröbner basis (Cox, Little, and O’Shea 2015), a standard form of the equation system that permits systematic checks of whether an additional equation follows from it. An equation already obtainable by rearranging, substituting, or eliminating variables adds no independent mathematical relationship. For example, V = IR and P = IV already imply P = I²R. Reprinting that third equation adds another source passage but no independent relationship. The tool also reports the number of independent mathematical relationships, termed equation-system rank.</p>
+<p>After testing the equations for redundancy, the algebraic analysis identifies minimal groups of interdependent metrics. A group is interdependent when specifying all but one member restricts the remaining member to finitely many possible values, at a typical solution of the equations. It is minimal when no smaller subset already has this property. For example, {V, I, R} is such a group under V = IR. The definition permits several possible values: under P = I²R, knowing P and R may leave both a positive and a negative value for I. The two values still reflect a constraint on I.</p>
+<p>Two paper metrics are counted as interdependent when they belong to a common minimal group. The size of the smallest group containing a pair records its directness: a group of three requires one further metric to constrain the pair, whereas a group of four requires two. Thus, a smaller group means that fewer other metrics must be known to relate the pair. Through this treatment, the tool can then extract not only the existence of interdependence between metrics, but also the degree of interdependence.</p>
+<p>Table A2 illustrates how a minimal group relates a pair of metrics. Here Q denotes charge and t denotes elapsed time. The complete set of eight minimal groups appears in the worked example in Table A4.</p>
+<table>
+<caption><b>Table A2.</b> Minimal groups and the directness of an interdependence</caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 15%" />
+<col style="width: 7%" />
+<col style="width: 10%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Minimal group</strong></th>
+<th style="text-align: center;"><strong>Relationship</strong></th>
+<th style="text-align: center;"><strong>Size</strong></th>
+<th style="text-align: center;"><strong>Pair</strong></th>
+<th style="text-align: center;"><strong>Other metrics that must be specified</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{V, I, R}</td>
+<td style="text-align: center;">V = IR</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">V–R</td>
+<td style="text-align: center;">Current I</td>
+</tr>
+<tr>
+<td>{V, R, P}</td>
+<td style="text-align: center;">V² = PR</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">V–P</td>
+<td style="text-align: center;">Resistance R</td>
+</tr>
+<tr>
+<td>{V, R, Q, t}</td>
+<td style="text-align: center;">Vt = QR</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">V–t</td>
+<td style="text-align: center;">Resistance R and charge Q</td>
+</tr>
+</tbody>
+</table>
+<p>Inequalities, asymptotic bounds, expectation expressions, and operator statements cannot be handled by this algebraic treatment of scalar equalities. They are therefore interpreted by the language model. For each statement, it identifies which pairs of metrics the statement makes interdependent and retains the equation reference and its interpretation. An error bound, for example, can relate computational cost to target accuracy without specifying an equality between them. These model-coded interdependencies remain distinguishable from those calculated from equalities; they receive no algebraic group size.</p>
+<h4 id="interdependencies-stated-in-prose">Interdependencies stated in prose</h4>
+<p>As with metrics identified from prose, this step extends the tool’s reach beyond relationships expressed in mathematical notation. A prose interdependence requires two coded metrics and an explicit connective in one sentence. “Fidelity falls as circuit depth grows” qualifies because it states how one metric varies with the other. “We report fidelity and circuit depth” does not. Connectives include depends on, scales with, limited by, requires, and determines. The tool retains the sentence, the connective, and the two metrics, allowing the reader to assess the interpretation.</p>
+<p>A statement denying dependence is retained but does not itself contribute an interdependence. For example, “cost does not scale with the number of terms” records independence between those metrics under the stated circumstances. An inverse relationship, such as fidelity falling as depth increases, still counts as an asserted interdependence. Thus, the distinction is between asserting and denying a relationship, rather than between a positive and negative slope.</p>
+<h4 id="conditions-on-an-interdependence">Conditions on an interdependence</h4>
+<p>Both equations and prose can establish a relationship that holds only under specified circumstances. These circumstances are its conditions: for example, a relationship may apply only at certain temperatures or under a particular implementation method. The condition can appear in the sentence itself, the assumptions of a theorem, an equation’s case split, or an explicitly stated section setting. Its metrics are identified under the rules in Section 2i; the task here is to connect them to the relationship they qualify. The condition is recorded with its supporting words and location. Table A3 illustrates these sources and the interdependencies they add.</p>
+<table style="width:100%;">
+<caption><b>Table A3.</b> Conditions and the interdependencies they add</caption>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 40%" />
+<col style="width: 18%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Source of condition</strong></th>
+<th style="text-align: center;"><strong>Illustrative statement</strong></th>
+<th style="text-align: center;"><strong>Condition metric</strong></th>
+<th style="text-align: center;"><strong>Added interdependencies</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Same sentence</td>
+<td>Power P rises with current I at temperatures T below 4 kelvin.</td>
+<td style="text-align: center;">Temperature T</td>
+<td style="text-align: center;">P–T; I–T</td>
+</tr>
+<tr>
+<td>Theorem assumption</td>
+<td>Assume resistance R is fixed. The stated result is P = IV.</td>
+<td style="text-align: center;">Resistance R</td>
+<td style="text-align: center;">P–R; I–R; V–R</td>
+</tr>
+<tr>
+<td>Equation case split</td>
+<td>In the low-temperature branch, an equation relates V and I.</td>
+<td style="text-align: center;">Temperature T</td>
+<td style="text-align: center;">V–T; I–T</td>
+</tr>
+<tr>
+<td>Explicit section context</td>
+<td>For a sequential implementation, cost grows with circuit depth.</td>
+<td style="text-align: center;">Sequential implementation</td>
+<td style="text-align: center;">Cost–implementation; depth–implementation</td>
+</tr>
+</tbody>
+</table>
+<p>If the relationship between metrics A and B depends on a condition naming metric C, the tool also records interdependencies A–C and B–C. The same rule applies when the conditioned statement denies an A–B relationship. For example, a statement that cost does not scale with the number of terms under a low-rank condition makes rank relevant to interpreting both cost and the number of terms. When two metrics are named in the condition, each is associated with A and B; their presence in the same condition does not by itself establish an interdependence between them.</p>
+<p>The same pair can be interdependent under one condition and independent under another. The tool retains both statements. Its overall pair comparison counts an interdependence if the paper establishes it under at least one recorded condition; the accompanying evidence identifies that condition.</p>
+<h3 id="metrics-in-a-blog">2iii. Metrics in a blog</h3>
+<p>Blog metrics are identified in the same way as metrics extracted from a paper’s prose, using the measurement frames and naming rules in Section 2i. The blog is initially coded on its own, so a metric can be identified even if the paper does not discuss it.</p>
+<p>The tool then maps blog metrics to potential paper counterparts by checking the blog against the paper’s alias table. If the paper calls n “number of qubits,” a blog’s “53 qubits” can be associated with that metric. Each candidate match is checked in context: “time” in “at the same time” is not a mention of simulation time. A valid match can identify an existing blog metric, add a further mention of it, or recover a metric missed in the initial blog pass.</p>
+<p>The same metric boundary slider detailed above also controls the granularity of this mapping. At fine, a match requires an exact match to one of the paper’s documented names. Moving toward coarse can match an otherwise unmatched blog metric to its most similar paper metric when their definitions reach the selected threshold. The slider therefore governs both which terms are combined within a document and which differently worded metrics can be matched across the two documents.</p>
+<h3 id="interdependencies-in-a-blog">2iv. Interdependencies in a blog</h3>
+<p>The tool identifies blog interdependencies using the same rule for interdependencies expressed in paper prose (Section 2ii): one sentence must connect two coded metrics through an explicit connective.</p>
+<h2 id="worked-example">3. Worked example</h2>
+<h3 id="a-short-paper-on-electricity">3i. A short paper on electricity</h3>
+<p>Consider an illustrative paper whose abstract reads: “We study voltage V, current I, resistance R, power P, charge Q, and elapsed time t.” It states four equations:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>V</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">(1)\ \ V\  = \ IR</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>P</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>V</mi></mrow><annotation encoding="application/x-tex">(2)\ \ P\  = \ IV</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>3</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>P</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><msup><mi>I</mi><mn>2</mn></msup><mi>R</mi></mrow><annotation encoding="application/x-tex">(3)\ \ P\  = \ I^{2}R</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>4</mn><mo stretchy="false" form="postfix">)</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>Q</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mi>I</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">(4)\ \ Q\  = \ It</annotation></semantics></math></p>
+<p>It also states: “At temperatures T below 4 kelvin, voltage V is independent of current I.” The resulting inventory contains seven metrics: V, I, R, P, Q, t, and T. The temperature threshold is a value of T, rather than a separate metric.</p>
+<p>Equation (3) follows from substituting equation (1) into equation (2). It therefore adds no independent mathematical relationship. Equations (1), (2), and (4) supply three independent relationships and establish the eight minimal groups in Table A4.</p>
+<table>
+<caption><b>Table A4.</b> Minimal interdependent groups in the electricity paper</caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 23%" />
+<col style="width: 12%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Metrics in the group</strong></th>
+<th style="text-align: center;"><strong>Relationship</strong></th>
+<th style="text-align: center;"><strong>Group size</strong></th>
+<th style="text-align: center;"><strong>Printed in the paper</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{V, I, R}</td>
+<td style="text-align: center;">V = IR</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Equation (1)</td>
+</tr>
+<tr>
+<td>{V, I, P}</td>
+<td style="text-align: center;">P = IV</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Equation (2)</td>
+</tr>
+<tr>
+<td>{I, R, P}</td>
+<td style="text-align: center;">P = I²R</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Equation (3)</td>
+</tr>
+<tr>
+<td>{V, R, P}</td>
+<td style="text-align: center;">V² = PR</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>{I, Q, t}</td>
+<td style="text-align: center;">Q = It</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">Equation (4)</td>
+</tr>
+<tr>
+<td>{V, R, Q, t}</td>
+<td style="text-align: center;">Vt = QR</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>{V, P, Q, t}</td>
+<td style="text-align: center;">QV = Pt</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">No</td>
+</tr>
+<tr>
+<td>{R, P, Q, t}</td>
+<td style="text-align: center;">Q²R = Pt²</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">No</td>
+</tr>
+</tbody>
+</table>
+<p>Four of the relationships are implied without being printed separately. Eliminating I between V = IR and P = IV gives V² = PR; eliminating I between V = IR and Q = It gives Vt = QR. These groups count because they follow from the paper’s equations. By contrast, {V, I, R, Q} is not minimal: its subset {V, I, R} already forms an interdependent group.</p>
+<p>Every pair among V, I, R, P, Q, and t belongs to at least one minimal group, giving fifteen interdependencies. Their directness varies. Voltage and resistance share the three-metric group {V, I, R}, so fixing current restricts their relationship. Voltage and time require a four-metric group, such as {V, R, Q, t}; fixing resistance and charge restricts their relationship.</p>
+<p>The temperature sentence records independence of voltage and current in its stated regime without erasing the relationship established elsewhere. Because the condition names T, it adds V–T and I–T. The paper therefore has seventeen distinct interdependencies: six each for voltage and current, five each for resistance, power, charge, and time, and two for temperature.</p>
+<figure><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1000 640" role="img" aria-labelledby="f1-title f1-desc" font-family="Arial, Helvetica, sans-serif">
+<title id="f1-title">The seven-metric electricity example: equation and condition relationships</title><desc id="f1-desc">Panel A shows all fifteen interdependencies among voltage V, current I, resistance R, power P, charge Q and elapsed time t. Nine have a smallest group of three; six have a smallest group of four. Panel B shows temperature T linked to voltage and current by the condition T below 4 kelvin. These two links have no algebraic group size.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#17638B"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/><text x="25" y="35" font-size="24" font-weight="700" fill="#20252B" text-anchor="start">A. Relationships from equations</text><text x="700" y="35" font-size="22" font-weight="700" fill="#20252B" text-anchor="start">B. A stated condition</text><path d="M665 55V470" fill="none" stroke="#D1D7DD" stroke-width="1.5" stroke-linecap="round"/><path d="M570 120 Q397.5 35 225 120" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M225 120 Q397.5 490 570 400" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M570 120 Q397.5 490 225 400" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M225 400 Q397.5 475 570 400" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M75 265 Q322.5 25 570 120" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M75 265 Q322.5 490 570 400" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><path d="M395 265 L225 120" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M225 400 L225 120" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M395 265 L225 400" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M75 265 L225 120" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M395 265 L75 265" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M75 265 L225 400" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M395 265 L570 120" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M395 265 L570 400" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><path d="M570 120 L570 400" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><circle cx="75" cy="265" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="75" y="274" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">P</text><circle cx="225" cy="120" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="225" y="129" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">V</text><circle cx="225" cy="400" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="225" y="409" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">R</text><circle cx="395" cy="265" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="395" y="274" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">I</text><circle cx="570" cy="120" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="570" y="129" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">Q</text><circle cx="570" cy="400" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="570" y="409" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">t</text><text x="835" y="90" font-size="24" font-weight="700" fill="#9C4F00" text-anchor="middle">T &lt; 4 K</text><circle cx="835" cy="150" r="30" fill="white" stroke="#20252B" stroke-width="2"/><text x="835" y="159" font-size="28" font-weight="700" fill="#20252B" text-anchor="middle">T</text><path d="M835 180 L740 300" fill="none" stroke="#9C4F00" stroke-width="3" stroke-linecap="round"/><circle cx="740" cy="325" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="740" y="334" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">V</text><path d="M835 180 L930 300" fill="none" stroke="#9C4F00" stroke-width="3" stroke-linecap="round"/><circle cx="930" cy="325" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="930" y="334" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">I</text><text x="835" y="387" font-size="18" font-weight="400" fill="#20252B" text-anchor="middle">The sentence denies V–I dependence.</text><text x="835" y="419" font-size="18" font-weight="400" fill="#20252B" text-anchor="middle">Its condition adds T–V and T–I.</text><text x="835" y="451" font-size="18" font-weight="400" fill="#20252B" text-anchor="middle">No algebraic group size is assigned.</text><text x="25" y="480" font-size="19" font-weight="400" fill="#20252B" text-anchor="start">V: voltage    I: current    R: resistance</text><text x="25" y="510" font-size="19" font-weight="400" fill="#20252B" text-anchor="start">P: power     Q: charge    t: elapsed time</text><text x="700" y="490" font-size="19" font-weight="400" fill="#20252B" text-anchor="start">T: temperature</text><path d="M30 550H105" fill="none" stroke="#17638B" stroke-width="5.3" stroke-linecap="round"/><text x="120" y="557" font-size="20" font-weight="400" fill="#20252B" text-anchor="start">Smallest shared group: 3 metrics</text><path d="M520 550H595" fill="none" stroke="#17638B" stroke-width="2.2" stroke-linecap="round"/><text x="610" y="557" font-size="20" font-weight="400" fill="#20252B" text-anchor="start">Smallest shared group: 4 metrics</text><text x="500" y="607" font-size="22" font-weight="700" fill="#20252B" text-anchor="middle">15 equation-derived pairs + 2 condition-derived pairs = 17 interdependencies</text></svg><figcaption><b>Figure 1.</b> Interdependencies in the electricity paper. Panel A shows all fifteen pairs implied by the equations. Thicker lines indicate a smallest shared group of three metrics; thinner lines indicate four. Panel B adds the two temperature-based interdependencies. These have no algebraic group size. Elapsed time t and temperature T are separate metrics.</figcaption></figure>
+<h3 id="a-short-blog-post-about-the-electricity-paper">3ii. A short blog post about the electricity paper</h3>
+<p>Suppose a blog post contains three sentences:</p>
+<blockquote>
+<p>1. “Our new paper shows that the power a device draws rises with the current through it.”</p>
+<p>2. “The power a device can safely draw decreases as its temperature increases.”</p>
+<p>3. “The paper also reports how much charge each device delivered.”</p>
+</blockquote>
+<p>The first two sentences identify power, current, and temperature through scaling expressions. The third identifies charge through “how much charge.” The blog thus contains four metrics and five metric mentions: two for power and one each for current, temperature, and charge. All four names match the paper’s terminology, giving counterparts P, I, T, and Q.</p>
+<p>The first sentence states current → power, retaining the paper’s I–P interdependence. The second states temperature → power, an interdependence absent from the paper. The third names charge without relating it to another metric. Voltage, resistance, and time are absent from the blog.</p>
+<figure><svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1000 568" role="img" aria-labelledby="f2-title f2-desc" font-family="Arial, Helvetica, sans-serif">
+<title id="f2-title">From the blog’s measurement expressions to metrics, relationships and paper counterparts</title><desc id="f2-desc">Sentence one identifies current and power and states current to power. Sentence two identifies temperature and power and states temperature to power, an inverse relationship. Sentence three identifies charge without a relationship. Current, power, temperature and charge map by name to I, P, T and Q. The blog has four metrics, five mentions and two relationships.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#17638B"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/><text x="25" y="35" font-size="24" font-weight="700" fill="#20252B" text-anchor="start">Measurement expressions in the three blog sentences</text><rect x="25" y="65" width="305" height="115" rx="8" fill="#EDF4F8" stroke="#17638B" stroke-width="1.5"/><text x="177.5" y="98" font-size="18" font-weight="700" fill="#20252B" text-anchor="middle">(1) “power … rises with …</text><text x="177.5" y="123" font-size="18" font-weight="700" fill="#20252B" text-anchor="middle">current”</text><text x="177.5" y="154" font-size="18" font-weight="400" fill="#707780" text-anchor="middle">Scaling construction</text><rect x="347" y="65" width="337" height="115" rx="8" fill="#EDF4F8" stroke="#17638B" stroke-width="1.5"/><text x="515.5" y="98" font-size="18" font-weight="700" fill="#20252B" text-anchor="middle">(2) “power … decreases as …</text><text x="515.5" y="123" font-size="18" font-weight="700" fill="#20252B" text-anchor="middle">temperature increases”</text><text x="515.5" y="154" font-size="18" font-weight="400" fill="#707780" text-anchor="middle">Scaling construction</text><rect x="701" y="65" width="274" height="115" rx="8" fill="#EDF4F8" stroke="#17638B" stroke-width="1.5"/><text x="838.0" y="104" font-size="18" font-weight="700" fill="#20252B" text-anchor="middle">(3) “how much charge”</text><text x="838.0" y="145" font-size="18" font-weight="400" fill="#707780" text-anchor="middle">Measurement head</text><path d="M177 180 C177 215 130 220 130 255" fill="none" stroke="#D1D7DD" stroke-width="2" stroke-linecap="round"/><path d="M177 180 C177 215 375 220 375 255" fill="none" stroke="#D1D7DD" stroke-width="2" stroke-linecap="round"/><path d="M515 180 C515 215 375 220 375 255" fill="none" stroke="#D1D7DD" stroke-width="2" stroke-linecap="round"/><path d="M515 180 C515 215 625 220 625 255" fill="none" stroke="#D1D7DD" stroke-width="2" stroke-linecap="round"/><path d="M838 180 C838 215 870 220 870 255" fill="none" stroke="#D1D7DD" stroke-width="2" stroke-linecap="round"/><text x="25" y="247" font-size="17" font-weight="700" fill="#20252B" text-anchor="start">BLOG</text><path d="M210 295H290" fill="none" stroke="#17638B" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/><path d="M545 295H460" fill="none" stroke="#17638B" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow)"/><rect x="50" y="260" width="160" height="70" rx="8" fill="white" stroke="#20252B" stroke-width="1.5"/><text x="130" y="304" font-size="21" font-weight="700" fill="#20252B" text-anchor="middle">Current</text><path d="M130 330V403" fill="none" stroke="#707780" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="130" cy="435" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="130" y="444" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">I</text><rect x="295" y="260" width="160" height="70" rx="8" fill="white" stroke="#20252B" stroke-width="1.5"/><text x="375" y="304" font-size="21" font-weight="700" fill="#20252B" text-anchor="middle">Power</text><path d="M375 330V403" fill="none" stroke="#707780" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="375" cy="435" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="375" y="444" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">P</text><rect x="545" y="260" width="160" height="70" rx="8" fill="white" stroke="#20252B" stroke-width="1.5"/><text x="625" y="304" font-size="21" font-weight="700" fill="#20252B" text-anchor="middle">Temperature</text><path d="M625 330V403" fill="none" stroke="#707780" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="625" cy="435" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="625" y="444" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">T</text><rect x="790" y="260" width="160" height="70" rx="8" fill="white" stroke="#20252B" stroke-width="1.5"/><text x="870" y="304" font-size="21" font-weight="700" fill="#20252B" text-anchor="middle">Charge</text><path d="M870 330V337 M870 370V403" fill="none" stroke="#707780" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="3 6"/><circle cx="870" cy="435" r="27" fill="white" stroke="#20252B" stroke-width="2"/><text x="870" y="444" font-size="27" font-weight="700" fill="#20252B" text-anchor="middle">Q</text><text x="250" y="358" font-size="17" font-weight="400" fill="#17638B" text-anchor="middle">(1) rises with</text><text x="500" y="358" font-size="17" font-weight="400" fill="#17638B" text-anchor="middle">(2) inverse relationship</text><text x="870" y="358" font-size="17" font-weight="400" fill="#707780" text-anchor="middle">No relationship stated</text><text x="25" y="403" font-size="17" font-weight="700" fill="#20252B" text-anchor="start">PAPER</text><text x="500" y="502" font-size="22" font-weight="700" fill="#20252B" text-anchor="middle">4 distinct metrics · 5 metric mentions · 2 stated interdependencies</text><text x="500" y="539" font-size="19" font-weight="400" fill="#20252B" text-anchor="middle">Power occurs in sentences (1) and (2). Charge is named without an interdependence.</text></svg><figcaption><b>Figure 2.</b> From blog sentences to metrics and interdependencies. The numbered excerpts refer to the three sentences above. The two scaling expressions identify current, power, and temperature and state two interdependencies. The third sentence identifies charge without an interdependence. Dotted lines show name-based matches to paper metrics. Power is counted once in each of the first two sentences.</figcaption></figure>
+<h2 id="putting-both-together-checking-the-blog-against-">4. Putting both together checking the blog against the paper</h2>
+<p>The paper and blog representations are combined in a map. Each blog metric points to the paper metric or metrics it represents under the mapping rules in Section 2iii. This set is its preimage. In the electricity example, the preimages of current, power, temperature, and charge are {I}, {P}, {T}, and {Q}. An unmatched blog metric has an empty preimage. Read in the other direction, the corresponding blog metric is the paper metric’s blog image. Voltage V, resistance R, and elapsed time t have no blog image in this example.</p>
+<p>For each pair of paper metrics, the map records three things: whether the blog names both metrics, whether the blog states an interdependence between them, and whether the paper establishes that interdependence. These answers distinguish a retained interdependence from one omitted with both metrics named, one metric named, or neither metric named. Blog interdependencies absent from the paper, and those involving an unmatched metric, are recorded separately.</p>
+<p>In the worked example, current–power retains the paper’s I–P interdependence. I–Q is omitted although both metrics are named; Q–t has only one metric named; V–R has neither named. Temperature–power is an additional blog interdependence relative to the paper. Retention concerns the presence of interdependence between the corresponding metrics. It does not require identical direction, magnitude, functional form, or conditions; those details remain available in the source passages.</p>
+<figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 546" width="100%" role="img" aria-label="All four blog metrics map to paper metrics. Voltage V, resistance R and elapsed time t are absent from the blog. Current to power is retained; temperature to power is additional to the paper. Selected omitted paper relationships illustrate both metrics named, one metric named, and neither metric named. Figure 1 shows the full paper network." font-family="-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif" font-size="13"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#8a8f98"/></marker></defs><rect width="760" height="546" fill="#fff"/><text x="24" y="32" font-size="15" font-weight="600" fill="#1f2328" text-anchor="start">Mapping the blog onto the paper</text><text x="290" y="70" font-size="11.5" font-weight="600" fill="#6b7380" text-anchor="end">BLOG METRICS</text><text x="520" y="70" font-size="11.5" font-weight="600" fill="#6b7380" text-anchor="start">PAPER METRICS</text><path d="M298 110 C410 110 400 100 512 100" fill="none" stroke="#9fb8c8" stroke-width="1.4"/><path d="M298 160 C410 160 400 145 512 145" fill="none" stroke="#9fb8c8" stroke-width="1.4"/><path d="M298 210 C410 210 400 190 512 190" fill="none" stroke="#9fb8c8" stroke-width="1.4"/><path d="M298 260 C410 260 400 235 512 235" fill="none" stroke="#9fb8c8" stroke-width="1.4"/><path d="M178 110 C130.5 110 130.5 160 178 160" fill="none" stroke="#0072B2" stroke-width="3"/><path d="M178 260 C113.0 260 113.0 160 178 160" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M638 100 C683.75 100 683.75 145 638 145" fill="none" stroke="#0072B2" stroke-width="3"/><path d="M638 100 C699.5 100 699.5 190 638 190" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M638 100 C715.25 100 715.25 235 638 235" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M638 280 C683.75 280 683.75 235 638 235" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M638 190 C731.0 190 731.0 370 638 370" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><path d="M638 280 C683.75 280 683.75 325 638 325" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><circle cx="290" cy="110" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="276" y="114" font-size="13" font-weight="400" fill="#1f2328" text-anchor="end">current</text><circle cx="290" cy="160" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="276" y="164" font-size="13" font-weight="400" fill="#1f2328" text-anchor="end">power</text><circle cx="290" cy="210" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="276" y="214" font-size="13" font-weight="400" fill="#1f2328" text-anchor="end">charge</text><circle cx="290" cy="260" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="276" y="264" font-size="13" font-weight="400" fill="#1f2328" text-anchor="end">temperature</text><circle cx="520" cy="100" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="104" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">I  current</text><circle cx="520" cy="145" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="149" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">P  power</text><circle cx="520" cy="190" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="194" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">Q  charge</text><circle cx="520" cy="235" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="239" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">T  temperature</text><circle cx="520" cy="280" r="6" fill="#fff" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="284" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">V  voltage</text><circle cx="520" cy="325" r="6" fill="#fff" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="329" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">R  resistance</text><circle cx="520" cy="370" r="6" fill="#fff" stroke="#0b6e74" stroke-width="1.6"/><text x="534" y="374" font-size="13" font-weight="400" fill="#1f2328" text-anchor="start">t  time</text><text x="124" y="139.0" font-size="11" font-weight="400" fill="#6b7380" text-anchor="end">rises with</text><text x="106" y="240.0" font-size="11" font-weight="400" fill="#6b7380" text-anchor="end">decreases as</text><text x="24" y="410" font-size="11" font-weight="600" fill="#6b7380" text-anchor="start">NODES</text><circle cx="90" cy="406" r="6" fill="#0b6e74" stroke="#0b6e74" stroke-width="1.6"/><text x="102" y="410" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">has a corresponding blog/paper metric</text><polygon points="350,399 357,406 350,413 343,406" fill="#0b6e74"/><text x="364" y="410" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">has multiple corresponding metrics (none here)</text><circle cx="90" cy="428" r="6" fill="#fff" stroke="#0b6e74" stroke-width="1.6"/><text x="102" y="432" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">has no corresponding blog/paper metric</text><text x="24" y="460" font-size="11" font-weight="600" fill="#6b7380" text-anchor="start">EDGES</text><path d="M90 456H130" fill="none" stroke="#0072B2" stroke-width="3"/><text x="140" y="460" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">link is supported in the corresponding paper/blog</text><path d="M90 478H130" fill="none" stroke="#0072B2" stroke-width="1.1"/><text x="140" y="482" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">link is partly supported (none here)</text><path d="M90 500H130" fill="none" stroke="#0072B2" stroke-width="1.6" stroke-dasharray="5 4"/><text x="140" y="504" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">link is not supported in the corresponding paper/blog</text><path d="M500 456H540" fill="none" stroke="#9fb8c8" stroke-width="1.4"/><text x="550" y="460" font-size="12" font-weight="400" fill="#1f2328" text-anchor="start">blog metric to paper metric</text><text x="24" y="532" font-size="11.5" font-weight="400" fill="#6b7380" text-anchor="start">Only selected paper links are drawn; Figure 1 shows the full paper network.</text></svg><figcaption><b>Figure 3.</b> Mapping the blog onto the paper. Filled circles identify metrics with counterparts; open circles identify paper metrics omitted from the blog. Grey lines match names across texts. The solid current–power relationship is retained. The dashed temperature–power relationship is additional to the paper. Selected paper relationships illustrate the omission categories; Figure 1 shows the complete paper network.</figcaption></figure>
+<h2 id="measures-derived-from-the-map">5. Measures derived from the map</h2>
+<p>The mapping in Section 2iii permits many possible comparisons between paper and blog, and even between papers. The metrics and interdependencies essentially produce different conceptual networks, which can be compared with a variety of network algorithms.</p>
+<p>The tool offers two basic ways of interpreting the differences between the paper’s and blog’s conceptual networks: where a paper’s metrics and interdependencies may be under or over represented in its companion blog.</p>
+<h3 id="metric-salience">5i. Metric salience</h3>
+<p>Table 1 in the tool compares the share of attention given to each paper metric in the two documents. <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>A</mi><annotation encoding="application/x-tex">A</annotation></semantics></math> is its share of paper metric mentions. Each mention is a distinct sentence using one of the metric’s names, or a numbered equation containing it.</p>
+<p>Table A5 reports the worked example using the metric-salience measures shown in Table 1 on the website.</p>
+<p><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math> is the share of blog metric mentions assigned to the corresponding paper metric. Its denominator includes all blog metrics, including unmatched ones; each metric counts at most once per sentence. Mention skew compares the paper and blog shares:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>M</mi><mi>e</mi><mi>n</mi><mi>t</mi><mi>i</mi><mi>o</mi><mi>n</mi><mspace width="0.222em"></mspace><mi>s</mi><mi>k</mi><mi>e</mi><mi>w</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mi>B</mi><mi>A</mi></mfrac></mrow><annotation encoding="application/x-tex">Mention\ skew\  = \ \frac{B}{A}</annotation></semantics></math></p>
+<p>A ratio above one indicates a larger share of attention in the blog; below one indicates a smaller share. The electricity paper has 21 metric mentions: six in the abstract, twelve across its four equations, and three in the temperature sentence. Power appears in the abstract and equations (2) and (3), giving A = 3/21. It receives two of the blog’s five mentions, giving B = 2/5. Its mention skew is therefore (2/5)/(3/21) = 2.80.</p>
+<p>The ratios use the website’s symbols and shading: ▲ for overrepresentation (at least ×1.41), ● for approximate proportionality (above ×0.71 and below ×1.41), and ▼ for underrepresentation (at most ×0.71). Darker fills identify ratios of at least ×2 or at most ×0.5.</p>
+<table>
+<caption><b>Table A5.</b> Metric salience in the worked example corresponding to website Table 1</caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 16%" />
+<col style="width: 13%" />
+<col style="width: 14%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Paper metric</strong></th>
+<th style="text-align: center;"><strong>Paper mentions A</strong></th>
+<th style="text-align: center;"><strong>Paper links · PageRank C</strong></th>
+<th style="text-align: center;"><strong>Blog metrics for it</strong></th>
+<th style="text-align: center;"><strong>Blog mentions B</strong></th>
+<th style="text-align: center;"><strong>Mention skew B/A</strong></th>
+<th style="text-align: center;"><strong>Centrality skew B/C</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Temperature T</td>
+<td style="text-align: center;">1<br />
+(4.8%)</td>
+<td style="text-align: center;">2 · 7.1%</td>
+<td style="text-align: center;">Temperature</td>
+<td style="text-align: center;">1<br />
+(20.0%)</td>
+<td style="text-align: center;" class="sk-o2">▲ ×4.20</td>
+<td style="text-align: center;" class="sk-o2">▲ ×2.82</td>
+</tr>
+<tr>
+<td>Power P</td>
+<td style="text-align: center;">3<br />
+(14.3%)</td>
+<td style="text-align: center;">5 · 14.5%</td>
+<td style="text-align: center;">Power</td>
+<td style="text-align: center;">2<br />
+(40.0%)</td>
+<td style="text-align: center;" class="sk-o2">▲ ×2.80</td>
+<td style="text-align: center;" class="sk-o2">▲ ×2.76</td>
+</tr>
+<tr>
+<td>Charge Q</td>
+<td style="text-align: center;">2<br />
+(9.5%)</td>
+<td style="text-align: center;">5 · 14.5%</td>
+<td style="text-align: center;">Charge</td>
+<td style="text-align: center;">1<br />
+(20.0%)</td>
+<td style="text-align: center;" class="sk-o2">▲ ×2.10</td>
+<td style="text-align: center;" class="sk-mid">● ×1.38</td>
+</tr>
+<tr>
+<td>Current I</td>
+<td style="text-align: center;">6<br />
+(28.6%)</td>
+<td style="text-align: center;">6 · 17.5%</td>
+<td style="text-align: center;">Current</td>
+<td style="text-align: center;">1<br />
+(20.0%)</td>
+<td style="text-align: center;" class="sk-u1">▼ ×0.70</td>
+<td style="text-align: center;" class="sk-mid">● ×1.14</td>
+</tr>
+<tr>
+<td>Voltage V</td>
+<td style="text-align: center;">4<br />
+(19.0%)</td>
+<td style="text-align: center;">6 · 17.5%</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">0<br />
+(0.0%)</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+</tr>
+<tr>
+<td>Resistance R</td>
+<td style="text-align: center;">3<br />
+(14.3%)</td>
+<td style="text-align: center;">5 · 14.5%</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">0<br />
+(0.0%)</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+</tr>
+<tr>
+<td>Time t</td>
+<td style="text-align: center;">2<br />
+(9.5%)</td>
+<td style="text-align: center;">5 · 14.5%</td>
+<td style="text-align: center;">—</td>
+<td style="text-align: center;">0<br />
+(0.0%)</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+</tr>
+</tbody>
+</table>
+<p>The tool also compares blog attention with a metric’s centrality in the paper’s network of interdependencies. C is PageRank, calculated on the undirected paper network with damping 0.85 and normalized to sum to one. Centrality increases when a metric is interdependent with many metrics, or with metrics that are themselves central. Centrality skew, B/C, compares the blog’s attention with this structural position rather than with the metric’s frequency of mention.</p>
+<p>An unmatched blog metric contributes to total blog attention but has no paper-relative ratio. When one blog metric represents several paper metrics, its mentions count toward each without dividing the credit; the mapped B shares may therefore sum to more than one. If A is zero and B is positive, mention skew is infinite; if both are zero, it is undefined.</p>
+<h3 id="interdependence-salience">5ii. Interdependence salience</h3>
+<p>Table A6 illustrates the interdependence-salience measures reported in Table 2 on the website. It examines whether the blog retains interdependencies evenly across the paper metrics it names. For each represented paper metric, D is its number of distinct paper interdependencies and K is the number also stated in the blog. Its share supported is K/D. The typical share supported, p̄, is the mean of these shares across represented metrics, giving each metric equal weight. Selectivity compares a metric’s share with that mean:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><mi>h</mi><mi>a</mi><mi>r</mi><mi>e</mi><mspace width="0.222em"></mspace><mi>s</mi><mi>u</mi><mi>p</mi><mi>p</mi><mi>o</mi><mi>r</mi><mi>t</mi><mi>e</mi><mi>d</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mi>K</mi><mi>D</mi></mfrac><mspace width="0.222em"></mspace><mo>,</mo><mspace width="0.222em"></mspace><mspace width="0.222em"></mspace><mi>S</mi><mi>e</mi><mi>l</mi><mi>e</mi><mi>c</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>i</mi><mi>t</mi><mi>y</mi><mspace width="0.222em"></mspace><mo>=</mo><mspace width="0.222em"></mspace><mfrac><mrow><mi>K</mi><mi>/</mi><mi>D</mi></mrow><mover><mi>p</mi><mo accent="true">¯</mo></mover></mfrac></mrow><annotation encoding="application/x-tex">Share\ supported\  = \ \frac{K}{D}\ ,\ \ Selectivity\  = \ \frac{K/D}{\overline{p}}</annotation></semantics></math></p>
+<p>A selectivity of one indicates retention of the typical share. Values above one indicate greater retention; values below one indicate less. The expected number retained at the typical share is Dp̄. An interdependence introduced by the blog but absent from the paper does not increase K.</p>
+<table style="width:100%;">
+<caption><b>Table A6.</b> Interdependence salience in the worked example corresponding to website Table 2</caption>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 7%" />
+<col style="width: 10%" />
+<col style="width: 12%" />
+<col style="width: 10%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Paper metric</strong></th>
+<th style="text-align: center;"><strong>In blog</strong></th>
+<th style="text-align: center;"><strong>Paper links D</strong></th>
+<th style="text-align: center;"><strong>Supported K</strong></th>
+<th style="text-align: center;"><strong>Expected Dp̄</strong></th>
+<th style="text-align: center;"><strong>Share supported</strong></th>
+<th style="text-align: center;"><strong>Selectivity</strong></th>
+<th style="text-align: center;"><strong>Unsupported</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Power P</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">1 of 5<br />
+(20%)</td>
+<td style="text-align: center;" class="sk-o2">▲ ×2.18</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>Current I</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.6</td>
+<td style="text-align: center;">1 of 6<br />
+(17%)</td>
+<td style="text-align: center;" class="sk-o1">▲ ×1.82</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td>Charge Q</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.5</td>
+<td style="text-align: center;">0 of 5<br />
+(0%)</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr>
+<td>Temperature T</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.2</td>
+<td style="text-align: center;">0 of 2<br />
+(0%)</td>
+<td style="text-align: center;" class="sk-u2">▼ ×0.00</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr>
+<td>Voltage V</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr>
+<td>Resistance R</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+<tr>
+<td>Time t</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+<td style="text-align: center;">NA</td>
+</tr>
+</tbody>
+</table>
+<p>The “Unsupported” column counts blog interdependencies absent from the paper. The additional temperature–power relationship contributes one to each endpoint’s count, while contributing nothing to the retained share. Values are calculated before display rounding.</p>
+<p>The blog retains one of current’s six interdependencies and one of power’s five. It retains none for charge or temperature. Thus p̄ = (1/6 + 1/5 + 0 + 0)/4 ≈ 0.092. Dividing each metric’s share by this mean gives selectivity of approximately 1.82 for current and 2.18 for power. The blog concentrates retained interdependence around these metrics. Its temperature–power statement remains additional to the paper and contributes to neither retention numerator.</p>
+<p>Paper metrics absent from the blog display NA in the website’s Table 2 and in Table A6 here, and are excluded from p̄; Table A5 shows their omission. A metric with no paper interdependencies has no defined share supported. If the blog retains none of the paper’s interdependencies, selectivity is undefined. D includes partners absent from the blog, so the measure reflects both omission of partner metrics and omission of relationships between named metrics.</p>
+<h2 id="conclusion">6. Conclusion</h2>
+<p>These measures allow organizational research to examine how firms select and organize technical information. A blog may emphasize fidelity while omitting the circuit depth, computational cost, or operating conditions related to it in the paper. Metric salience captures the allocation of attention; interdependence salience captures the retention of those relationships. The underlying passages permit further assessment of how the firm represents their direction, magnitude, and conditions.</p>
+<p>Researchers can also use network measures to examine whether communication concentrates on a few central metrics, preserves clusters of interdependent metrics, or separates dimensions that the paper relates. These conceptual networks can be compared across a firm’s other artifacts, such as patents and press releases, across time, or across firms.</p>
+<h2 id="references">References</h2>
+<p>Cox DA, Little J, O’Shea D (2015) Ideals, Varieties, and Algorithms: An Introduction to Computational Algebraic Geometry and Commutative Algebra, 4th ed. (Springer, Cham). https://doi.org/10.1007/978-3-319-16721-3.</p>
+<p>Sentence Transformers. n.d. all-mpnet-base-v2 model card. https://huggingface.co/sentence-transformers/all-mpnet-base-v2. Accessed November 1, 2026.</p>
+</main></body></html>
